@@ -1,0 +1,84 @@
+// Magma provides very natural ways for working with permutation groups.
+S3 := SymmetricGroup(3);
+
+// We define a permutation g by providing a sequence [s1,s2,...sn]
+// where the image of i under g is si:
+g0 := S3![1,2,3];
+// This is the identity element of the group, which can also be defined as Id(S3)
+g0 eq Id(S3);
+
+g1 := S3![2,3,1];
+g2 := S3![1,3,2];
+
+// Notice that Magma will give the results of permutation group computations
+// in cycle notation.
+g1;
+// (1, 2, 3)
+g2;
+// (2, 3)
+g1*g2;
+// (1, 3)
+g2*g1;
+// (1, 2)
+g1^2;
+// (1, 3, 2)
+
+
+// Magma will give us some basic information about a group
+S12 := SymmetricGroup(12);
+S12;
+/*
+Symmetric group S12 acting on a set of cardinality 12
+Order = 479001600 = 2^10 * 3^5 * 5^2 * 7 * 11
+*/
+
+g1 := S12![1,3,5,10,9,8,7,4,6,11,12,2];
+g1;
+// (2, 3, 5, 9, 6, 8, 4, 10, 11, 12)
+g1^3;
+// (2, 9, 4, 12, 5, 8, 11, 3, 6, 10)
+g1^-1;
+// (2, 12, 11, 10, 4, 8, 6, 9, 5, 3)
+IsEven(g1);
+// false
+IsEven(g1^2);
+// true
+
+// We can construct subgroups of a given group by giving a set of
+// generators for the subgroup.
+s := sub<S12 | g1>;
+s;
+/*
+Permutation group s acting on a set of cardinality 12
+Order = 10 = 2 * 5
+    (2, 3, 5, 9, 6, 8, 4, 10, 11, 12)
+*/
+
+// We can list all of the elements of a subgroup,
+// or ask about elements satisfying a given condition.
+{g : g in s};
+{g : g in s | Order(g) eq 5};
+#{g : g in s | Order(g) eq 5};
+
+
+
+
+// Given two different subgroups, we can compare them
+h1 := S12![2,1,3,4,5,6,7,8,9,10,11,12];
+h2 := S12![1,2,4,5,6,7,8,9,10,11,12,3];
+
+
+s1 := sub<S12 | g1, h1>;
+s2 := sub<S12 | g1, h2>;
+#s1;
+// 39916800
+#s2;
+// 39916800
+#{g : g in s1 | Order(g) eq 5};
+// 809424
+#{g : g in s2 | Order(g) eq 5};
+// 809424
+s1 eq s2;
+// false
+#(s1 meet s2);
+// 3628800

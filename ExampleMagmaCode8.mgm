@@ -1,0 +1,92 @@
+// Want to find the "distinct" necklaces
+// with 8 black/white beads.
+// Two necklaces are the "same"
+// if an element of D8 changes one to the other.
+// Represent a necklace by the set of black beads.
+D8 := DihedralGroup(8);
+
+// Considerr finding the necklaces with two black beads.
+N2 := { {a,b} : a,b in [1..8] | a ne b};
+#N2;
+N2;
+
+t := Rep(N2);
+t;
+O := Orbit(D8, t);
+O;
+
+t2 := rep{ a : a in N2 | a notin O};
+t2;
+O2 := Orbit(D8, t2);
+O2;
+
+t3 := rep{ a : a in N2 | a notin O and a notin O2};
+t3;
+O3 := Orbit(D8, t3);
+O3;
+
+t4 := rep{ a : a in N2 | a notin O and a notin O2 and a notin O3};
+t4;
+O4 := Orbit(D8, t4);
+O4;
+
+#N2;
+#O + #O2 + #O3 + #O4;
+t; t2; t3; t4;
+
+// Now let's consider turning this into a loop
+// that does the work for us.
+N2 := { {a,b} : a,b in [1..8] | a ne b};
+DistinctNecklaces := {};
+IsEmpty(N2);
+t := Rep(N2);
+Include(~DistinctNecklaces, t);
+O := Orbit(D8,t);X
+DistinctNecklaces;
+for o in O do
+  Exclude(~N2,o);
+end for;
+N2;
+#N2;
+O;
+IsEmpty(N2);
+t := Rep(N2);
+Include(~DistinctNecklaces, t);
+O := Orbit(D8,t);X
+for o in O do
+  Exclude(~N2,o);
+end for;
+for o in O do
+  Exclude(~N2,o);
+end for;
+DistinctNecklaces;
+#N2;
+
+// All together now:
+N2 := { {a,b} : a,b in [1..8] | a ne b};
+DistinctNecklaces := {};
+while not IsEmpty(N2) do
+  t := Rep(N2);
+  Include(~DistinctNecklaces, t);
+  O := Orbit(D8,t);
+  for o in O do
+    Exclude(~N2,o);
+  end for;
+end while;
+N2;
+DistinctNecklaces;
+
+// Can do the same for necklaces with 3 black beads:
+N3 := { {a,b,c} : a,b,c in [1..8] | #{a,b,c} eq 3};
+DistinctNecklaces := {};
+#N3;
+while not IsEmpty(N3) do
+  t := Rep(N3);
+  Include(~DistinctNecklaces, t);
+  O := Orbit(D8,t);
+  for o in O do
+    Exclude(~N3,o);
+  end for;
+end while;
+N3;
+DistinctNecklaces;

@@ -1,0 +1,113 @@
+// Working with matrices
+Q := Rationals();
+
+Mat := Matrix(Q, [ [1,2,3,4,5,6], [2,5,6,8,9,4], [1, -1, 1, -1, 1, -1]]);
+Mat;
+
+/* We can solve the matrix equation xA = b
+Solution(A,b) will return
+    -first: a vector v with vA=b,
+    -second: a vector subspace H with hA=0 for all h in H
+    Then the collection of all solutions to xA is
+    { v+h : h in H }
+    BUT Solution(A,b) will give an error if a solution does not exist.
+IsConsistent(A,b) will return
+    -first: true/false depending on whether a solution exists
+    -second: a vector v with vA=b,
+    -third: a vector subspace H with hA=0 for all h in H
+    We will not get an error if there are no solutions.
+*/
+Solution(Mat, Vector(Q, [5,7,2,1,0,-3]));
+IsConsistent(Mat, Vector(Q, [5,7,2,1,0,-3]));
+
+// We can ask Magma some properties of our matrix:
+Nullspace(Mat);
+Nrows(Mat);
+Ncols(Mat);
+
+// We can ask about the rows of the matrix (each row is treated as a vector)
+Mat;
+Mat[1];
+Mat[2];
+Mat[3];
+
+// We can also do basic row operations:
+AddRow(Mat, -1, 1, 3);
+Mat;
+Mat2 := AddRow(Mat, -1, 1, 3);
+Mat2;
+
+// The ~ form of the commands CHANGES Mat, instead of returning a new matrix:
+AddRow(~Mat, -1, 1, 3);
+Mat;
+AddRow(~Mat, -2, 1, 2);
+Mat;
+AddRow(~Mat, 3, 2, 3);
+Mat;
+MultiplyRow(~Mat, -1/2, 3);
+Mat;
+AddRow(~Mat, -3, 1, 3);
+Mat;
+AddRow(~Mat, 3, 1, 3);
+Mat;
+AddRow(~Mat, -3, 3, 1);
+Mat;
+AddRow(~Mat, -2, 2, 1);
+Mat;
+
+
+//Some tips solving the homework problems.
+
+// Problem 3:
+// To find the integer solutions to y^3 = x^2 + 2000000,
+// same as x^2 = y^3 - 2000000
+// We need to be able to take the square root of the right side:
+Y := { y : y in [100..700] | IsSquare(y^3 - 2000000) };
+Y;
+// This gives the y-values so that y^3 - 2000000 is an integer.
+// Now we want the x-values that go with each y-value.
+// Notice if (x,y) is a solution then so is (-x,y)
+
+// Join together the set of solutions with positive x-values, and with negative x-values.
+Z := Integers();
+{ [ Z!Sqrt(y^3 - 2000000), y] : y in Y } join { [Z!-1*Sqrt(y^3 - 2000000), y] : y in Y};
+
+// Problem 2: Some hints:
+//Your function can set things up like this:
+R := RealField();
+L1 := [[3,4],[7,8]];
+L2 := [[1,2],[3,9]];
+// L1 := [ [0,0],[1,2]];
+// L2 := [ [2,4],[3,6]];
+X1 := Vector(R, L1[1]);
+A1 := Vector(R, L1[2]);
+X2 := Vector(R, L2[1]);
+A2 := Vector(R, L2[2]);
+M := Matrix([A1-X1, X2-A2]);
+B := X2-X1;
+/* Then we want to know :
+    1: Is there a solution to tM = B?
+    2: Is there a solution that actually lies in the line segments?
+*/
+consistent, v, N := IsConsistent(M,B);
+/*
+    consistent will be true/false depending if there are solutions or not.
+    IF there are solutions, v will be a solution.
+    IF there are solutions, N will be a subspace of R^2,
+        Dimension(N) = 0 will mean that xM=0 has ONLY the trivial solution,
+            so v will be the ONLY solution to tM=B
+        Dimension(N) = 1 will mean that the two line segments are parallel,
+            if this is the case, there will be more than one solution to tM=B
+            you will need to determine if there is a solution that lies inside the line segments.
+*/
+consistent;
+v;
+N;
+
+
+// You can use these two commands when Dimension(N) = 1
+// to decide if the line segments overlap or not.
+Solution(Matrix(A1-X1), X2-X1);
+// This means X2 is not between X1 and A1
+Solution(Matrix(A1-X1), A2-X1);
+// This means A2 is not between X1 and A1

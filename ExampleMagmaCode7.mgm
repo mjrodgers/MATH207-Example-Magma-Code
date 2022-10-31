@@ -1,0 +1,80 @@
+// Working with permutation groups.
+
+// We can work with the symmetric group S_n by using the SymmetricGroup(n) command:
+G := SymmetricGroup(5);
+
+// Remember that each element of S_n is a bijection from the set {1,2,...,n} to itself.
+// There are a few ways to define elements of this group,
+// the first is to put in a sequence where we say where each number goes.
+// To send 1->3, 2->4, 3->2, 4->1. 5->5 we can put this in:
+sigma := G![3,4,2,1,5];
+sigma;
+
+// We can also represent a permutation as a product of disjoint cycles.
+// This is the same map as above, noticing that 1->3, 3->2, 2->4, and 4->1.
+// We leave out the orbits of length 1.
+sigma := G!(1,3,2,4);
+sigma;
+
+// Magma will not complain if the orbits are not disjoint;
+// but note that the LEFT permutation is applied first.
+rho := G!(1,3,5)(2,3,4);
+// returns (1, 4, 2, 3, 5),
+// which means if we want to see where an element a goes under rho,
+//   first we apply (1,3,5)
+//   THEN we apply (2,3,4).
+// This matches how we apply a permutation in Magma: if we want to see where 1 goes,
+1^rho;
+// This also fits the notation for multiplying permutations:
+rho1 := G!(1,3,5);
+rho2 := (2,3,4);
+rho eq rho1*rho2;
+1^rho := (1^rho1)^rho2;
+
+// We can do work in symmetric groups that are bigger and harder to work with by hand:
+S10 := Sym(10);
+sigma1 := S10![5,3,7,1,2,10,9,8,4,6];
+sigma1;
+sigma2 := S10!(1,4,2)(3,7,8,9)(5,10);
+sigma2;
+Order(sigma2);
+[ a^sigma2  : a in [1..10]];
+Eltseq(sigma2);
+
+// We can also define a permutation group to permute some other kind of object,
+// rather than just {1,2,...,n}:
+Sabcd := Sym({ "a", "b", "c", "d"});
+Sabcd;
+{g : g in Sabcd};
+Sabcd!["b", "d", "c", "a"];
+
+
+// Magma does best when we think of groups as permutation groups;
+// We can work with D6, the dihedral group, which
+// (in Magma notation) is the group acting on a regular hexagon (6-sides);
+// D6 is a subgroup of S6, and has 12 elements
+// (note that some books call this group D12)
+D6 := DihedralGroup(6);
+D6;
+
+// We think of the numbers 1..6 as the corners of the hexagon.
+// We can consider what this group does to TRIANGLES
+//  (triangle: take 3 different corners of the hexagon to get a triangle)
+T := { {a,b,c} : a,b,c in {1,2,3,4,5,6} | #{a,b,c} eq 3};
+#T;
+T;
+// Now we can look at what happens to the different triangles
+// when we apply the group elements to them:
+t1 := {1,2,3};
+T1 := { t1^g : g in D6 };
+t2 := {1,2,4};
+T2 := { t2^g : g in D6 };
+t3 := {1,3,5};
+T3 := { t3^g : g in D6 };
+T1;
+T2;
+T3;
+// Notice that these three sets of triangles are disjoint,
+// and together give us all the triangles from T.
+// Why are these sets different sizes?
+// Can we find a way to determine the size of these sets?

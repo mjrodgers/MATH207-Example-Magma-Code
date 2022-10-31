@@ -1,0 +1,274 @@
+// Want to find the "distinct" necklaces
+// with n black/white beads.
+// Two necklaces are the "same"
+// if an element of D8 changes one to the other.
+// Represent a necklace by the set of black beads.
+
+n := 8;
+
+Dn := DihedralGroup(n);
+DistinctNecklaces := {};
+
+k := 3;
+
+Nk := Subsets({1..n}, k);
+while not IsEmpty(Nk) do
+  t := Rep(Nk);
+  Include(~DistinctNecklaces, t);
+  O := Orbit(Dn,t);
+  for o in O do
+    Exclude(~Nk,o);
+  end for;
+end while;
+
+DistinctNecklaces;
+
+
+function Necklaces(n,k)
+  // Return necklaces with n total beads, k black
+  Dn := DihedralGroup(n);
+  DistinctNecklaces := {};
+
+  Nk := Subsets({1..n}, k);
+  while not IsEmpty(Nk) do
+    t := Rep(Nk);
+    Include(~DistinctNecklaces, t);
+    O := Orbit(Dn,t);
+    for o in O do
+      Exclude(~Nk,o);
+    end for;
+  end while;
+
+  return DistinctNecklaces;
+end function;
+
+
+function Necklaces(n)
+  // Return all necklaces with n total
+  // black/white beads
+  Dn := DihedralGroup(n);
+  DistinctNecklaces := {};
+  S := {1..n};
+  for k in [0..n] do
+    Nk := Subsets(S, k);
+    while not IsEmpty(Nk) do
+      t := Rep(Nk);
+      Include(~DistinctNecklaces, t);
+      O := Orbit(Dn,t);
+      for o in O do
+        Exclude(~Nk,o);
+      end for;
+    end while;
+  end for;
+
+  return DistinctNecklaces;
+end function;
+
+
+// For 3 colors: (copied from Necklaces(n,k))
+function Necklaces(n, k, r)
+  // return necklaces with n beads of 3 colors
+  // k color '1', r of color '2', n-(k+r) color '0'
+
+  // n := 8; k := 2; r := 1;
+  Dn := DihedralGroup(n);
+  DistinctNecklaces := {};
+
+  //Need to define the set Nkr
+  S := {1..n};
+  Nkr := {};
+  Sk := Subsets(S,k);
+  for s in Sk do
+    Sr := Subsets(S diff s, r);
+    for t in Sr do
+      Include(~Nkr, [s,t]);
+    end for;
+  end for;
+
+
+  while not IsEmpty(Nkr) do
+    t := Rep(Nkr);
+    Include(~DistinctNecklaces, t);
+    O := Orbit(Dn,t);
+    for o in O do
+      Exclude(~Nkr,o);
+    end for;
+  end while;
+
+  return DistinctNecklaces;
+end function;
+
+// Possible ways to loop through values of k,r.
+for k in [0..n] do
+  for r in [0..n-k] do
+
+  end for;
+end for;
+
+for k,r in [0..n] do
+  if k+r gt n then
+    continue;
+  end if;
+
+end for;
+
+
+
+
+
+G := Graph< 5 | {1,2}, {2,3}, {3,4}, {4,5}, {5,1} >;
+G;
+Vertices(G);
+Edges(G);
+V := VertexSet(G);
+V;
+1;
+V!1;
+1 eq V!1;
+Type(1);
+Type(V!1);
+Sub3 := Subsets({1,2,3,4,5}, 3);
+r := Random(Sub3);
+r;
+AssignVertexLabels(~G, [1,1,1,0,0]);
+G;
+Label(V!1);
+IsVertexLabelled(V!1);
+IsLabelled(V!1);
+V := VertexSet(G);
+IsLabelled(V!1);
+Label(VertexSet(G)!1);
+G := Graph< 5 | {1,2}, {2,3}, {3,4}, {4,5}, {5,1} >;
+V := VertexSet(G);
+AssignVertexLabels(~G, [1,1,1,0,0]);
+V := VertexSet(G);
+n := 10;
+k := 4;
+r := 2;
+S1 := Subsets({1..10}, k);
+s1 := Random(S1);
+s1;
+S2 := Subsets( {1..10} - s1 , r);
+S2 := Subsets( {1..10} diff s1 , r);
+{1..10} diff s1;
+s2 := Random(S2);
+s1;
+s2;
+A := AutomorphismGroup(G);
+G := Graph< 5 | {1,2}, {2,3}, {3,4}, {4,5}, {5,1} >;
+1;2Ak := 4;
+V := VertexSet(G);
+A := AutomorphismGroup(G);
+s := [{V!1, V!2}, {V!3}];
+Orbit(A,s);
+Orbit(A, V!1);
+A;
+s := [{1, 2}, {3}];
+Orbit(A,s);
+Nkr := {};
+Sk := Subsets({1..8}, 3);
+for sk in Sk do
+Sr := Subsets({1..8} diff sk, 2);
+for sr in Sr do
+Include(~Nkr, [sk,sr]);
+end for;
+end for;
+#Nkr;
+Nkr;
+{ N : N in Nkr | N[1] eq {1,2,3} };
+t := Random(Nkr);
+t;
+D8 := DihedralGroup(8);
+Orbit(D8, t);
+DistinctNecklaces := {};
+#Nkr;
+while not IsEmpty(Nkr) do
+  t := Rep(Nkr);
+  Include(~DistinctNecklaces, t);
+  O := Orbit(D8,t);
+  for o in O do
+    Exclude(~Nkr,o);
+  end for;
+end while;
+Nkr;
+DistinctNecklaces;
+#DistinctNecklaces;
+Subsets(3,2);
+function Necklaces(n,k)
+  // Return necklaces with n total beads, k black
+  Dn := DihedralGroup(n);
+  DistinctNecklaces := {};
+  Nk := Subsets({1..n}, k);
+  while not IsEmpty(Nk) do
+    t := Rep(Nk);
+    Include(~DistinctNecklaces, t);
+    O := Orbit(Dn,t);
+    for o in O do
+      Exclude(~Nk,o);
+    end for;
+  end while;
+  return DistinctNecklaces;
+end function;
+Necklaces(8,3);
+n := 8; k := 2; r := 1;
+  Dn := DihedralGroup(n);
+  DistinctNecklaces := {};
+  //Need to define the set Nkr
+  S := {1..n};
+  Nkr := {};
+  Sk := Subsets(S,k)
+  for s in Sk do
+    Sr := Subsets(S diff s, r);
+    for t in Sr do
+      Include(~Nkr, [s,t]);
+    end for;
+  end for;
+n := 8; k := 2; r := 1;
+  Dn := DihedralGroup(n);
+  DistinctNecklaces := {};
+S := {1..n};
+  Nkr := {};
+  Sk := Subsets(S,k);
+for s in Sk do
+    Sr := Subsets(S diff s, r);
+    for t in Sr do
+      Include(~Nkr, [s,t]);
+    end for;
+  end for;
+Nkr;
+while not IsEmpty(Nkr) do
+    t := Rep(Nkr);
+    Include(~DistinctNecklaces, t);
+    O := Orbit(Dn,t);
+    for o in O do
+      Exclude(~Nkr,o);
+    end for;
+  end while;
+DistinctNecklaces;
+function Necklaces(n, k, r)
+  // return necklaces with n beads of 3 colors
+  // k color '1', r of color '2', n-(k+r) color '0'
+  // n := 8; k := 2; r := 1;
+  Dn := DihedralGroup(n);
+  DistinctNecklaces := {};
+  //Need to define the set Nkr
+  S := {1..n};
+  Nkr := {};
+  Sk := Subsets(S,k);
+  for s in Sk do
+    Sr := Subsets(S diff s, r);
+    for t in Sr do
+      Include(~Nkr, [s,t]);
+    end for;
+  end for;
+  while not IsEmpty(Nkr) do
+    t := Rep(Nkr);
+    Include(~DistinctNecklaces, t);
+    O := Orbit(Dn,t);
+    for o in O do
+      Exclude(~Nkr,o);
+    end for;
+  end while;
+  return DistinctNecklaces;
+end function;
+Necklaces(6, 2,2);

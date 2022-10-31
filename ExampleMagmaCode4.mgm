@@ -1,0 +1,153 @@
+// Some miscellaneous tips
+
+a := 7; b := 16; c := 29;
+IsEven(a), IsEven(b), IsEven(c);
+// false true false
+IsOdd(a), IsOdd(b), IsOdd(c);
+// true false true
+
+// IsSquare returns one or two values:
+// a true/false, based on whether the number is a square or not
+// if the number IS a square, a second value is returned:
+// the positive square root.
+IsSquare(a), IsSquare(b), IsSquare(c);
+// false true 4 false
+IsSquare(7);
+// false
+IsSquare(16);
+// true 4
+
+// We can save the relevant parts of the function output
+b := IsSquare(16);
+b;
+//true
+b, d := IsSquare(16);
+b;
+// true
+d;
+// 4
+
+// If we only want the second value, can use _ to discard the first value:
+_, d := IsSquare(16);
+
+// We won't get an error if a result is not defined until we try to check the value:
+_, d := IsSquare(7);
+
+d;
+
+// >> d;
+//   ^
+// User error: Identifier 'd' has not been declared or assigned
+
+
+procedure issquare(a)
+  b, d := IsSquare(a);
+  if (b eq true) then
+    print "the number ", a, " is the square of ", d;
+  else
+    print "the number ", a, " is not a square.";
+  end if;
+end procedure;
+
+issquare(7);
+// the number  7  is not a square.
+
+issquare(16);
+// the number  16  is the square of  4
+
+
+Factorization(16);
+// [ <2, 4> ]
+
+Factorization(10513225);
+// [ <5, 2>, <17, 1>, <29, 1>, <853, 1> ]
+
+
+Divisors(10513225);
+// [ 1, 5, 17, 25, 29, 85, 145, 425, 493, 725, 853, 2465, 4265, 12325,
+// 14501, 21325, 24737, 72505, 123685, 362525, 420529, 618425,
+// 2102645, 10513225 ]
+
+D := Divisors(10513225);
+DS := { d:  d in D | IsSquare(d) };
+DS;
+// { 1, 25 }
+
+
+
+R<x> := PolynomialRing(Rationals());
+
+p1 := (x^2 +1);
+p1 in R;
+// true
+p2 := x^6 +1;
+
+p1;
+// x^2 + 1
+p2;
+// x^6 + 1
+p1*p2;
+// x^8 + x^6 + x^2 + 1
+p3 := p1*p2;
+Degree(p3);
+// 8
+Coefficients(p3);
+// [ 1, 0, 1, 0, 0, 0, 1, 0, 1 ]
+p3;
+// x^8 + x^6 + x^2 + 1
+LeadingCoefficient(p3);
+// 1
+ConstantCoefficient(p3);
+// 1
+Terms(p3);
+// [
+//     1,
+//     x^2,
+//     x^6,
+//     x^8
+// ]
+LeadingTerm(p3);
+// x^8
+
+function MultiplyByLeadingTerm(p);
+  LT := LeadingTerm(p);
+  return p*LT;
+end function;
+
+MultiplyByLeadingTerm(p1);
+//x^4 + x^2
+MultiplyByLeadingTerm(p3);
+// x^16 + x^14 + x^10 + x^8
+
+p3;
+//x^8 + x^6 + x^2 + 1
+Derivative(p3);
+// 8*x^7 + 6*x^5 + 2*x
+Integral(p3);
+// 1/9*x^9 + 1/7*x^7 + 1/3*x^3 + x
+
+
+S<x,y> := PolynomialRing(Rationals(),2);
+S;
+// Polynomial ring of rank 2 over Rational Field
+// Order: Lexicographical
+// Variables: x, y
+p := x^2 * y^3;
+Derivative(p);
+// >> Derivative(p);
+             ^
+// Runtime error in 'Derivative': Bad argument types
+// Argument types given: RngMPolElt
+
+// Need to take PARTIAL derivative, specify which variable:
+Derivative(p,x);
+// 2*x*y^3
+Derivative(p,y);
+// 3*x^2*y^2
+
+// Note that dividing polynomials gives a RATIONAL FUNCTION,
+// not a polynomial, uses a different algebraic structure.
+x*y/(x^2 +y^2);
+// $.1*$.2/($.1^2 + $.2^2)
+
+// The $.1 and $.2 get used in place of x and y in this new structure.

@@ -1,0 +1,110 @@
+// Comments can be put on lines that start with //
+// We run code by copying and pasting into the Online Calculator
+// when we "Submit", comments will be ignored.
+
+
+// These lines define P1, P2, P3 to be sets of polynomials using the appropriate field.
+// Notice that inside the < > we say the name we will use for the variable.
+P1<x> := PolynomialRing(IntegerRing());
+P2<y> := PolynomialRing(Rationals());
+P3<z> := PolynomialRing(RealField());
+
+// We can alternately give names to the Integers, Rationals, Reals in the following way:
+Z := IntegerRing();
+P1<x> := PolynomialRing(Z);
+Q := Rationals();
+P2<y> := PolynomialRing(Q);
+R := RealField();
+P3<z> := PolynomialRing(R);
+
+// If we define the same polynomial in each ring, the difference is where the coefficients live:
+p1 :=3*x^2 -5*x +2;
+p2 :=3*y^2 -5*y +2;
+p3 :=3*z^2 -5*z +2;
+
+// We can see the difference when we ask for a factorization.
+// Notice that MAGMA does not factor over the real numbers:
+print "The factorization over the integers:";
+Factorization(p1);
+print "The factorization over the rationals:";
+Factorization(p2);
+print "The factorization over the real numbers gives an error:";
+Factorization(p3);
+
+// But we CAN ask for the roots of a polynomial over the real numbers:
+print "The real roots of the polynomial:";
+Roots(p3);
+
+// We can factor more complicated polynomials as well:
+Factorization(x^8 -1);
+
+// Using numbers, MAGMA will automatically decide if we have integer, rationalm or real numbers:
+print 4/2;
+print 4.0/2.0;
+print 4/3;
+print 4.0/3.0;
+
+print 2 + (4*9) - (2/3);
+print 2 + (4*9) - (2/3) - 3.0;
+
+// We use "div" and "mod" to do integer division (quotient and remainder):
+152 div 37;
+152 mod 37;
+print "can combine in single statement:";
+152 div 37, 152 mod 37;
+
+// Commas can separate multiple operations, we get the results in a list.
+25 mod 3, 125 mod 3, 98 mod 3, 229 mod 3;
+
+
+
+// There are lots of built in functions we can use, can use them in expressions:
+Factorial(7);
+3*Factorial(7) + 2*Factorial(7)^2;
+
+// We can also rename expressions to make them easier to use:
+F := Factorial;
+3*F(7) + 2*F(5) - 13*F(6);
+
+// For testing relations, we use eq, ne, lt, le, gt, ge:
+// eq : equals, ne : not equals
+// lt : less than, le : less than or equal
+// gt : greater than, ge : greater than or equal
+// MAGMA will return value of `true' or `false'
+(3^2 -5) eq 4;
+(3^2 - 5 eq 7) or (2^2 eq 4);
+
+// Lots of other functions can test properties and tell us true/false:
+IsPrime(101);
+IsPrime(157);
+IsPrime(197);
+IsPrime(206);
+
+
+// We can use true false to decide what commands to execute,
+// for example, we can determine if a,b,c can be the side lengths of a triangle,
+// if they are, compute the area, otherwise give an area:
+a := 3; b := 5; c := 7;
+
+if ((a le b+c) and (b le a+c) and (c le a+b)) then
+  s := (a+b+c)/2;
+  A := Sqrt(s*(s-a)*(s-b)*(s-c));
+  print "The area is ", A, " units";
+else
+  print "These are not the sides of a triangle.";
+end if;
+
+// We can assign the above operations to a "function" that we can call:
+TriangleArea := function(a, b, c)
+  if ((a le b+c) and (b le a+c) and (c le a+b)) then
+    s := (a+b+c)/2;
+    A := Sqrt(s*(s-a)*(s-b)*(s-c));
+    print "The area is ", A, " units";
+  else
+    print "These are not the sides of a triangle.";
+    A := false;
+  end if;
+  return A;
+end function;
+// Note that a function HAS to return a value,
+// so if there is an error message we need to find a creative value to return.

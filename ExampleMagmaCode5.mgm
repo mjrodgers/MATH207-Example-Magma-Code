@@ -1,0 +1,156 @@
+// Examples on writing functions
+
+Z := Integers();
+Q := Rationals();
+R := RealField(20);
+P<x> := PolynomialRing(Q);
+
+Matrix(Z, 3,2, [1,2,3,4,5,6]);
+Matrix(Z, 2,3, [1,2,3,4,5,6]);
+Matrix(Z, [ [1,2,3],[4,5,6] ]);
+
+// We get errors if we don't give enough entries
+Matrix(Z, 2,3, [1,2,3,4,5]);
+Matrix(Z, [ [1,2,3],[4,5] ]);
+
+// We can leave out the field/ring and let Magma decide
+Matrix([ [1,2,3],[4,5,6] ]);
+
+// Parent command gives information about an object,
+// can tell us things like where coefficients live, etc.
+Parent( Matrix([ [1,2,3],[4,5,6] ]) );
+Parent( Matrix([ [1/1,2,3],[4,5,6] ]) );
+Parent( Matrix(Q, [ [1,2,3],[4,5,6] ]) );
+
+// Have some special commands for structured matrices
+DiagonalMatrix(Q, [1,2,3,4,5];
+DiagonalMatrix(Q, [1,2,3,4,5]);
+UpperTriangularMatrix(Q, [1,2,3,4]);
+UpperTriangularMatrix(Q, [1,2,3,4,5,6]);
+SymmetricMatrix(Q, [1,2,3,4,5,6]);
+
+// Vectors created just like matrices
+Vector( [1,2,3,4]);
+Vector(Q, [1,2,3,4]);
+Vector(R, [1,2,3,4]);
+
+A := Matrix( [ [1,4], [2,5], [3,6] ] );
+A;
+v := Vector([7,8,9]);
+
+// Vectors are rows, multiply from left of a matrix.
+A*v;
+v*A;
+
+// Can have polynomial entries:
+A := Matrix( [ [x^2,2*x], [3*x,5*x^3], [4,6*x] ] );
+A;
+v*A;
+v1 := Vector([2*x^2, 5*x]);
+v2 := Vector([5,7]);
+v1;
+v2;
+// This gives an error because Magma decided v1 has entries from P,
+// v2 has entries from Z
+(v1, v2);
+
+// By making sure entries of v2 are viewed as polynomials, we can compute dot product
+v1 := Vector([2*x^2, 5*x]);
+v2 := Vector(P, [5,7]);
+v1;
+v2;
+(v1, v2);
+
+
+
+M1 := Matrix(2,3, [1,2,3,4,5,6]);
+M2 := Matrix(3,5, [ i^2 : i in [1..15]]);
+M2;
+M1;
+M1*M2;
+Transpose(M2;
+Transpose(M2);
+M2;
+EchelonForm(M2);
+u := Vector(Q, [1,5,7]);
+
+
+// We know that we can project a vector x onto the line through u
+// using the formula ((u,x)/(u,u))*u.
+function ProjU(x)
+  return ((u,x) / (u,u))*u;
+end function;
+
+ProjU( Vector(Q, [13,5,3] ));
+
+// This function takes a vector u, then builds & returns a function
+function ProjFunc(u)
+  function ProjU(x)
+    return ((u,x) / (u,u))*u;
+  end function;
+  return ProjU;
+end function;
+
+f := ProjFunc( Vector(Q, [1,1,1]));
+f( Vector(Q, [3,4,7]));
+
+// Echelon Form depends on where the coefficients live,
+// Magma will only do row operations involving coefficients structure
+M2;
+EchelonForm(M2);
+M2 := Matrix(Q,3,5, [ i^2 : i in [1..15]]);
+EchelonForm(M2);
+// For integers, Magma won't multiply the row by (1/5),
+// even though the result would have integer entries.
+// This reduces to reduced echelon over the rational numbers.
+
+// EchelonForm(M) returns E, B so that B*M = E
+E,B := EchelonForm(M2);
+E;
+B;
+B*M2 eq E;
+
+
+M := Matrix(R, 2,2, [0,1,-1,0]);
+M;
+Eigenvalues(M);
+M := Matrix(R, 2,2, [0,1,2,0]);
+Eigenvalues(M);
+M := Matrix(Q, 2,2, [0,1,2,0]);
+Eigenvalues(M);
+M := Matrix(R, 2,2, [0,1,2,0]);
+M := Matrix(R, 2,2, [0,1,2,0]);
+M;
+EV := Eigenvalues(M);
+EV;
+EV[1];
+lambda := EV[1][1];
+lambda;
+Eigenspace(M, lambda);
+Eigenspaces(M);
+Eigenspace;
+M := Matrix(Q, 4,4, [0, -1, 0, -4, 1, 0, 3, 5, 4, 1, 2, 4, 6, 8, 0]);
+M := Matrix(Q, 4,4, [0, -1, 0, -4, 1, 0, 3, 5,3, 4, 1, 2, 4, 6, 8, 0]);
+M;
+Eigenvalues(M);
+M := DiagonalMatrix(Q, [1,1,3,3]);
+M;
+Eigenvalues(M);
+Eigenspace(M, 3);
+V := VectorSpace(Q,4);
+V;
+v1 := Vector(Q, [1,3,2,7]);
+v2 := Vector(Q, [3,-1,0,1]);
+v1 in V;
+elt<V | 1,3,2,7> eq v1;
+V![1,3,2,7] eq v1;
+Normalize(v2);
+u := (1/Norm(v2)) * v2;
+u;
+U := sub<V | v1, v2>;
+U;
+A := Matrix(Q, [[1,2,3], [2,3,4], [3,4,5]]);
+A;
+Inverse(A);
+A^-1;
+Determinant(A);
